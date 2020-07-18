@@ -1,0 +1,105 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<!-- page content starts here -->
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}" role="alert">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">My Cart ({{order.get_cart_items}})
+                <!--<span class="pull-right"><button  class="btn btn-link update-cart" data-product='0' data-action="clear_all">Clear All</button></span>-->
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for item in items %}
+                <li class="list-group-item">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img src="{{ item.product.imageURL }}" class="card-img" alt="...">
+                            <div class="col-md-7">
+
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <!--<p>-->
+                                <div class="col-md-12">
+                                    <h5 class="card-title">{{item.product.name}} - INR
+                                        {{item.product.price|floatformat:2}}</h5>
+                                </div>
+                                <!--</p>-->
+
+
+                                <p class="card-text">
+                                <div class="col-md-7">
+                                    Total INR {{item.get_total|floatformat:2}}
+                                </div>
+                                </p>
+                                <p>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button data-product="{{item.product.id}}" data-action="add"
+                                                    class="btn btn-outline-secondary update-cart" type="button"
+                                            >+
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" value="{{item.quantity}}" placeholder=""
+                                               aria-label="Example text with button addon"
+                                               aria-describedby="button-addon1">
+                                        <div class="input-group-append">
+                                            <button data-product="{{item.product.id}}" data-action="remove"
+                                                    class="btn btn-outline-secondary update-cart" type="button"
+                                            >-
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </p>
+                                <!--<p>-->
+                                <!--<input type="number" value="{{item.quantity}}" name="quantity"-->
+                                <!--class="item-quantity">-->
+                                <!--</p>-->
+                                <p class="card-text">
+                                    <button class="btn btn-link update-cart" data-product="{{item.product.id}}" data-action="remove_item" href="">Remove</button>
+                                    <!--<a class="btn btn-link" href="http://">Buy Now</a>-->
+                                </p>
+
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-outline-dark" href="{% url 'store_page' %}"><i class="fa fa-arrow-left"></i>  Shop more</a>
+        <br/>
+        <br/>
+        <div class="card">
+            <div class="card-header">PRICE DETAILS </div>
+
+            <div class="card-body">
+
+                <p class="card-text">Price ({{order.get_cart_items}} items)<span class="pull-right">{{order.get_cart_total|floatformat:2}}</span>
+                </p>
+                <p class="card-text">Delivery fee<span class="pull-right">0.00</span></p>
+                <hr>
+                <p class="card-text">Total Amount<span class="pull-right">{{order.get_cart_total|floatformat:2}}</span>
+                </p>
+
+            </div>
+            <div class="card-footer text-right"><a href="{% url 'checkout_page' %}" class="btn btn-primary">Check
+                Out</a></div>
+        </div>
+    </div>
+</div>
+<!-- page content ends here -->
+
+{% endblock content %}

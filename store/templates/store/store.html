@@ -1,0 +1,43 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- page content starts here -->
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}" role="alert">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+<div class="row">
+
+    {% include 'store/product_category.html' %}
+    <div class="col-md-10">
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 " style="padding-bottom:20px;">
+                <div class="card">
+                    <a href="{{ product.get_absolute_url}}">
+                        <img src="{{product.imageURL}}" height="150" class="card-img-top" alt="...">
+                    </a>
+                    <div class="card-body">
+                        <a href="{{ product.get_absolute_url}}"><h5 class="card-title">{{product.name}}</h5></a>
+                        <p class="card-text">INR {{product.price | floatformat:2}}</p>
+
+
+                        <button data-product="{{product.id}}" data-action="add"
+                                class="btn btn-outline-secondary add-btn update-cart">Add to Cart
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+<!-- page content ends here -->
+
+{% endblock content %}

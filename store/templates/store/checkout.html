@@ -1,0 +1,207 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<!-- page content starts here -->
+<div class="row">
+    <div class="col-md-8 ">
+        <div class="row" id="form-wrapper">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">Delivery Address</div>
+                    <div class="col-md-12">
+                        <form id="form">
+                            <div id="user-info">
+                                <label for="address">User information</label>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" aria-describedby="emailHelp"
+                                           placeholder="Enter Name" value="{{request.user.customer}}" required>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="text" class="form-control" id="email" aria-describedby="emailHelp"
+                                           placeholder="Enter email" value="{{request.user.email}}" required>
+
+                                </div>
+                            </div>
+                            <br/>
+                            <div id="shipping-info">
+                                <label for="address"><b>Shipping information</b></label>
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="form-control" name="address" id="address"
+                                           aria-describedby="emailHelp"
+                                           placeholder="Enter Address" required>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" class="form-control" name="city" id="city"
+                                           aria-describedby="emailHelp"
+                                           placeholder="Enter City" required>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <input type="text" class="form-control" name="state" id="state"
+                                           aria-describedby="emailHelp"
+                                           placeholder="Enter State" required>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="zipcode">Zip</label>
+                                    <input type="text" class="form-control" name="zipcode" id="zipcode"
+                                           aria-describedby="emailHelp"
+                                           placeholder="Enter Zip" required>
+
+                                </div>
+                                <div class="form-group">
+                                    <button id="form-button" class="btn btn-primary">Continue</button>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row hidden" id="payment-info">
+            <div class="col-md-12 ">
+                <div class="card">
+                    <div class="card-header">Paypal Options</div>
+                    <div class="box-element ">
+
+
+                        <button id="make-payment">Make payment</button>
+                        <!--<div id="paypal-button-container"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-outline-dark" href="{% url 'cart_page' %}"><i class="fa fa-arrow-left"></i> back to cart</a>
+        <br/>
+        <br/>
+        <div class="card">
+            <div class="card-header">Order Summary</div>
+
+            <div class="card-body">
+
+                <p class="card-text">Price ({{order.get_cart_items}} items)<span class="pull-right">INR {{order.get_cart_total|floatformat:2}}</span>
+                </p>
+                <p class="card-text">Delivery fee<span class="pull-right">INR 0.00</span></p>
+                <hr>
+                <p class="card-text">Total Amount<span
+                        class="pull-right">INR {{order.get_cart_total|floatformat:2}}</span></p>
+
+            </div>
+            <div class="card-footer text-right"></div>
+        </div>
+    </div>
+</div>
+<script>
+    var shipping = "{{order.shipping}}"
+    var total = '{{order.get_cart_total|floatformat:2}}'
+
+    if(shipping == "False"){
+        document.getElementById('shipping-info').innerHTML = ''
+    }
+
+    if (user != 'AnonymousUser'){
+		 document.getElementById('user-info').innerHTML = ''
+	}
+
+    if (shipping == 'False' && user != 'AnonymousUser'){
+		//Hide entire form if user is logged in and shipping is false
+		document.getElementById('form-wrapper').classList.add("hidden");
+		//Show payment if logged in user wants to buy an item that does not require shipping
+		document.getElementById('payment-info').classList.remove("hidden");
+	}
+
+
+    var forms = document.getElementById('form')
+    form.addEventListener('submit',function(e){
+        e.preventDefault()
+        document.getElementById('form-button').classList.add('hidden')
+        document.getElementById('payment-info').classList.remove('hidden')
+    })
+
+
+    document.getElementById('make-payment').addEventListener('click', function(e){
+	    	submitFormData()
+	})
+
+    function submitFormData(){
+
+        console.log('payment button clicked')
+
+        	var userFormData = {
+				'name':null,
+				'email':null,
+				'total':total,
+			}
+
+			var shippingInfo = {
+				'address':null,
+				'city':null,
+				'state':null,
+				'zipcode':null,
+			}
+
+			if (shipping != 'False'){
+	            shippingInfo.address = form.address.value
+		    	shippingInfo.city = form.city.value
+		    	shippingInfo.state = form.state.value
+		    	shippingInfo.zipcode = form.zipcode.value
+	    	}
+
+
+	        if (user == 'AnonymousUser'){
+	    		userFormData.name = form.name.value
+	    		userFormData.email = form.email.value
+	    	}
+
+
+	    	var url = '/process_order/'
+
+	    	fetch(url, {
+	    	    method:'POST',
+	    	    headers:{
+	    	        'Content-Type':'application/json',
+	    	        'X-CSRFToken' : csrftoken
+	    	    },
+	    	    body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo}),
+	    	}).then((response) => response.json())
+	    	.then((data) => {
+	    	    console.log('success data')
+	    	   // alert('order placed')
+
+
+               // clearCookies()
+
+	    	    window.location.href="{% url 'home_page'%}"
+	    	})
+
+
+    }
+
+
+
+
+
+
+
+
+
+</script>
+<!-- page content ends here -->
+
+{% endblock content %}

@@ -1,0 +1,9 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="center">
+    <h1>EMPTY CART <i class="fa fa-shopping-cart"></i></h1>
+    <p><a href="{% url 'store_page' %}" class="btn btn-link"><i class="fa fa-arrow-left"></i> Shop Now</a></p>
+</div>
+{% endblock content %}

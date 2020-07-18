@@ -1,0 +1,153 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <script>
+        var user = '{{request.user}}'
+
+
+
+        function getToken(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getToken('csrftoken');
+
+    </script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <title>E-com's</title>
+    <style>
+        .jumbotron {
+            background-image: url("{% static 'images/tv_app.jpg' %}");
+            background-size: cover;
+        }
+
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'home_page'%}">E-com's</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+
+        </ul>
+        <ul class="nav justify-content-center">
+            <li class="nav-item" style="padding-right:20px;">
+
+                <form action="{% url 'store_page' %}" method="get" class="form-inline">
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="k" id="k" placeholder="Search Here..."
+                                {% if 'k' in request.GET %}
+                                    value="{{request.GET.k}}"
+                                {% endif %}
+                        >
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-dark" type="submit">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </li>
+
+            <li class="nav-item">
+                {% if request.user.is_authenticated %}
+                <div class="btn-group btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                       <span id="user-profile">
+                            <i class="fa fa-user-o" aria-hidden="true"></i>
+                       </span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+
+                        <a class="dropdown-item" href="">Profile</a>
+
+                        <a class="dropdown-item" href="{% url 'logout_page'%}">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="btn-group btn-group" role="group">
+                    <button id="btnGroupDrop2" type="button" class="btn btn-outline-secondary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user-o" aria-hidden="true"></i> Guest User
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item" href="{% url 'login_page'%}">Sign In</a>
+                        <a class="dropdown-item" href="{% url 'signup_page' %}">Sign Up</a>
+                    </div>
+                </div>
+                {% endif %}
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-danger" href="{% url 'cart_page'%}">
+                    <i class="fa fa-shopping-cart fa-lg" aria-hidden="true"></i>
+                    <span id="cart-count">({{cart_items}})</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+<div class="container">
+    {% block content %}
+
+    {% endblock content %}
+</div>
+<br/>
+<script>
+
+        let usr = document.getElementById('user-profile')
+        usr.innerHTML += '<span>'+user+'</span>'
+
+
+
+
+
+</script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/cookie.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
