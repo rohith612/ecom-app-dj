@@ -68,7 +68,7 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
 
-                        <a class="dropdown-item" href="">Profile</a>
+                        <a class="dropdown-item" href="{% url 'profile_page' %}">Profile</a>
 
                         <a class="dropdown-item" href="{% url 'logout_page'%}">Logout</a>
                     </div>
@@ -201,13 +201,6 @@
         var user = '{{request.user}}'
         let usr = document.getElementById('user-profile')
         usr.innerHTML += '<span>'+user+'</span>'
-
-
-
-
-
-
-
 </script>
 <!-- <nav class="navbar fixed-bottom navbar-light bg-light">
     <a class="navbar-brand" href="#">E-com's</a>

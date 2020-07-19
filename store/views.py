@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .forms import CreateUserForm
+from .forms import CreateUserForm, CustomerForm
 from .utils import cart_data, save_cookie_item_logged_user
 
 
@@ -56,7 +56,19 @@ def signup(request):
 # profile page
 @login_required(login_url='login_page')
 def profile(request):
-    context = {}
+    customer_details = request.user
+    form = CustomerForm(instance=customer_details)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, instance=customer_details)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile information successfully updated...')
+    data = cart_data(request)
+    cart_items = data['cart_items']
+    shipping_address = ShippingAddress.objects.filter(customer=request.user.customer)
+    orders = Order.objects.filter(customer=request.user.customer, complete=True)
+    context = {'form': form, 'cart_items': cart_items,
+               'shipping_address': shipping_address, 'orders': orders}
     return render(request, 'store/profile.html', context)
 
 

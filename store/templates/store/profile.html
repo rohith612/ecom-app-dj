@@ -1,0 +1,110 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- page content starts here -->
+<div class="row">
+    <div class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+
+    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
+           aria-controls="v-pills-home" aria-selected="true">Profile</a>
+        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+           aria-controls="v-pills-profile" aria-selected="false">Manage Address</a>
+        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"
+           aria-controls="v-pills-messages" aria-selected="false">Order History</a>
+    </div>
+    <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+            <!--<div class="card card-body">-->
+            <form method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="profile-image">
+                    <img class="image-class" src="{% static 'images/user_vector.png'%}">
+                </div>
+
+                <div class="form-group">
+                    <label for="">First Name</label>
+                    {{ form.first_name}}
+                </div>
+                <div class="form-group">
+                    <label for="">Last Name</label>
+                    {{ form.last_name}}
+                </div>
+                <div class="form-group">
+                    <label for="">Username</label>
+                    {{ form.username}}
+                </div>
+                <div class="form-group">
+                    <label for="">Email Name</label>
+                    {{ form.email}}
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+
+            </form>
+            <!--</div>-->
+        </div>
+        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+
+            <div class="form-group">
+                <ul class="list-group list-group-flush">
+                    {% for address in shipping_address %}
+                    <li class="list-group-item">{{address.address}},{{address.city}},{{address.state}},{{address.zip}}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+
+
+        <div class="form-group">
+                <ul class="list-group list-group-flush">
+                    {% for item in orders %}
+                    <li class="list-group-item">
+                        {{item.date_ordered}},{{item.transaction_id}}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<script>
+        var form_fields = document.getElementsByTagName('input')
+		for (var field in form_fields){
+			form_fields[field].className += ' form-control'
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+<!-- page content ends here -->
+{% endblock content %}
